@@ -29,10 +29,10 @@
             <x-admin-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
                 {{ __('Hospitales') }}
             </x-admin-nav-link>
-            <x-admin-nav-link :href="route('admin.menus.index')" :active="request()->routeIs('admin.menus.index')">
+            <x-admin-nav-link :href="route('admin.paciente.index')" :active="request()->routeIs('admin.paciente.index')">
                 {{ __('Pacientes') }}
             </x-admin-nav-link>
-            <x-admin-nav-link :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.index')">
+            <x-admin-nav-link :href="route('admin.doctor.index')" :active="request()->routeIs('admin.doctor.index')">
                 {{ __('Doctores') }}
             </x-admin-nav-link>
             <x-admin-nav-link :href="route('admin.reservations.index')" :active="request()->routeIs('admin.reservations.index')">

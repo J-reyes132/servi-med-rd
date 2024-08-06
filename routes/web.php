@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\TableController;
@@ -32,6 +33,8 @@ Route::post('/reservation/step-two', [FrontendReservationController::class, 'sto
 
 Route::get('/thankyou', [WelcomeController::class, 'thankyou'])->name('thankyou');
 
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -39,6 +42,8 @@ Route::get('/dashboard', function () {
 Route::resource('/reservations', ReservationController::class);
 Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::resource('paciente', PacienteController::class);
+    Route::resource('doctor', DoctorController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/menus', MenuController::class);
     Route::resource('/tables', TableController::class);
@@ -50,7 +55,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
 });
 
 Route::middleware(['auth'])->name('paciente.')->prefix('paciente')->group(function() {
-    Route::get('/', [PacienteController::class, 'index'])->name('index');
+    Route::get('/', [Pacien::class, 'index'])->name('index');
     Route::resource('/categories', CategoryController::class);
     Route::resource('/menus', MenuController::class);
     Route::resource('/tables', TableController::class);

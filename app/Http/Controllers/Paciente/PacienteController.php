@@ -1,139 +1,92 @@
 <?php
-
 namespace App\Http\Controllers\Paciente;
 
-use App\Http\Controllers\Controller;
 use App\Models\Paciente;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class PacienteController extends Controller
 {
-
-        /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        return view('paciente.index');
-        // $users = User::where('id',auth()->user()->id)->first();
-        // if($users->role != 'Admin')
-        // {
-        //     return redirect()->route('admin.index')->with('danger', 'this user does not have permission to access this module');
-        // }
-        // $categories = Category::all();
-        // return view('admin.categories.index', compact('categories'));
+        $pacientes = Paciente::all();
+        return view('admin.pacientes.index', compact('pacientes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function show(Paciente $paciente)
+    {
+        return view('admin.pacientes.show', compact('paciente'));
+    }
+
     public function create()
     {
-        return view('admin.paciente.create');
+        $usuarios = User::where('role','Paciente')->get();
+        return view('admin.pacientes.create', compact('usuarios'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */ //
-    public function store(CategoryStoreRequest $request)
+    public function store(Request $request)
     {
-       $this->validate($request, [
-            'nombre' => 'required',
-            'apellido' => 'required',
-            'email' => 'required',
-            'telefono' => 'required',
-            'fecha_nacimiento' => 'required',
-            'sexo' => 'required',
-            'direccion' => 'required',
-            'peso' => 'required',
-            'altura' => 'required',
-            'enfermedades' => 'required',
+        $request->validate([
+            'user_id' => 'nullable|exists:users,id',
+            'cedula' => 'required|string|max:255|unique:pacientes',
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:pacientes',
+            'telefono' => 'required|string|max:15',
+            'fecha_nacimiento' => 'required|date',
+            'sexo' => 'required|string',
+            'edad' => 'required|integer',
+            'direccion' => 'required|string|max:255',
+            'peso' => 'required|numeric',
+            'altura' => 'required|numeric',
+            'tipo_sangre' => 'required|string',
+            'enfermedades' => 'nullable|string',
+            'nombre_seguro' => 'nullable|string|max:255',
+            'numero_seguro' => 'nullable|string|max:255',
         ]);
 
-        Category::create([
-            'nombre' => $request->name,
-            'apellido' => $request->apellido,
-            'email' => $request->email,
-            'telefono' => $request->telefono,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
-            'sexo' => $request->sexo,
-            'direccion' => $request->direccion,
-            'peso' => $request->peso,
-            'altura' => $request->altura,
-            'enfermedades' => $request->enfermedades,
-        ]);
+        Paciente::create($request->all());
 
-        return to_route('admin.paciente.index')->with('success', 'Category created successfully');
+        return redirect()->route('admin.paciente.index')->with('success', 'Paciente creado con éxito');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function edit(Paciente $paciente)
     {
-
+        $usuarios = User::where('role','Paciente')->get();
+        return view('admin.pacientes.edit', compact('paciente', 'usuarios'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Category $category)
-    {
-        return view('admin.categories.edit', compact('category'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Paciente $paciente)
     {
         $request->validate([
-            'nombre' => 'required',
-            'description' => 'required'
+            'user_id' => 'nullable|exists:users,id',
+            'cedula' => 'required|string|max:255|unique:pacientes,cedula,' . $paciente->id,
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:pacientes,email,' . $paciente->id,
+            'telefono' => 'required|string|max:15',
+            'fecha_nacimiento' => 'required|date',
+            'sexo' => 'required|string',
+            'edad' => 'required|integer',
+            'direccion' => 'required|string|max:255',
+            'peso' => 'required|numeric',
+            'altura' => 'required|numeric',
+            'tipo_sangre' => 'required|string',
+            'enfermedades' => 'nullable|string',
+            'nombre_seguro' => 'nullable|string|max:255',
+            'numero_seguro' => 'nullable|string|max:255',
         ]);
-        $image = $category->image;
-        if($request->hasFile('image')){
-            Storage::delete($category->image);
-            $image = $request->file('image')->store('public/categories');
-        }
 
-        $category->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'image' => $image
-        ]);
-        return to_route('admin.categories.index')->with('success', 'Category updated successfully');
+        $paciente->update($request->all());
+
+        return redirect()->route('admin.paciente.index')->with('success', 'Paciente actualizado con éxito');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Category $category)
+    public function destroy(Paciente $paciente)
     {
-        Storage::delete($category->image);
-        $category->menus()->detach();
-        $category->delete();
+        $paciente->delete();
 
-        return to_route('admin.categories.index')->with('danger', 'Category deleted successfully');
+        return redirect()->route('admin.pacientes.index')->with('danger', 'Paciente eliminado con éxito');
     }
 }
