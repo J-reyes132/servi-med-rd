@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CitaController;
 use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Admin\HorarioController;
+use App\Http\Controllers\Admin\HospitalController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\TableController;
@@ -43,7 +46,11 @@ Route::resource('/reservations', ReservationController::class);
 Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::resource('paciente', PacienteController::class);
+    Route::resource('hospital', HospitalController::class);
     Route::resource('doctor', DoctorController::class);
+    Route::resource('horario', HorarioController::class);
+    Route::resource('cita', CitaController::class);
+
     Route::resource('/categories', CategoryController::class);
     Route::resource('/menus', MenuController::class);
     Route::resource('/tables', TableController::class);

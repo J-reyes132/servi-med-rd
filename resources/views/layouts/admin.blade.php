@@ -26,7 +26,7 @@
             </button>
         </div>
         <nav :class="{'block': open, 'hidden': !open}" class="flex-grow px-4 pb-4 md:block md:pb-0 md:overflow-y-auto">
-            <x-admin-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
+            <x-admin-nav-link :href="route('admin.hospital.index')" :active="request()->routeIs('admin.categories.index')">
                 {{ __('Hospitales') }}
             </x-admin-nav-link>
             <x-admin-nav-link :href="route('admin.paciente.index')" :active="request()->routeIs('admin.paciente.index')">
@@ -35,10 +35,10 @@
             <x-admin-nav-link :href="route('admin.doctor.index')" :active="request()->routeIs('admin.doctor.index')">
                 {{ __('Doctores') }}
             </x-admin-nav-link>
-            <x-admin-nav-link :href="route('admin.reservations.index')" :active="request()->routeIs('admin.reservations.index')">
+            <x-admin-nav-link :href="route('admin.cita.index')" :active="request()->routeIs('admin.reservations.index')">
                 {{ __('Citas') }}
             </x-admin-nav-link>
-            <x-admin-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.index')">
+            <x-admin-nav-link :href="route('admin.horario.index')" :active="request()->routeIs('admin.orders.index')">
                 {{ __('Horarios') }}
             </x-admin-nav-link>
             <x-admin-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
