@@ -32,7 +32,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $user = Auth::user();
+        $role = $user->role;
+       // Redireccionar según el rol
+        if ($role === 'Admin') {
+            return redirect()->route('admin.index'); // Redirigir a la página de administrador
+        } elseif ($role === 'Paciente') {
+            return redirect()->route('paciente.index'); // Redirigir a la página de usuario regular
+        } elseif ($role === 'Doctor') {
+            return redirect()->route('doctor.index'); // Redirigir a la página de doctor
+        } else {
+            return redirect()->route('/'); // Redirigir a una página genérica o de inicio
+        }
     }
 
     /**

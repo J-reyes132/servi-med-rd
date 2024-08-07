@@ -20,6 +20,7 @@ class CitaController extends Controller
         return view('admin.cita.index', compact('citas'));
     }
 
+
     public function create()
     {
         $pacientes = Paciente::all();
@@ -119,5 +120,49 @@ public function approve(Cita $cita)
 {
     $cita->update(['status' => 'confirmada']);
     return redirect()->route('admin.cita.index')->with('success', 'Cita aprobada con éxito');
+}
+
+public function index_paciente(){
+    $user = auth()->user();
+    $paciente = Paciente::where('user_id', $user->id)->get();
+    return view('paciente.cita.index', compact('paciente'));
+}
+
+public function create_paciente()
+{
+    $user = auth()->user();
+    $paciente = Paciente::where('user_id', $user->id)->get();
+    $doctores = Doctor::all();
+    $hospitales = Hospital::all();
+    return view('paciente.cita.create', compact('paciente', 'doctores', 'hospitales'));
+}
+
+public function store_paciente(Request $request)
+{
+    $request->validate([
+        'paciente_id' => 'required|exists:pacientes,id',
+        'doctor_id' => 'required|exists:doctors,id',
+        'hospital_id' => 'required|exists:hospitals,id',
+        'fecha' => 'required|date|after_or_equal:today',
+        'hora' => 'required|date_format:H:i',
+        'motivo' => 'required|string|max:255',
+        'status' => 'required|in:pendiente,confirmada,atendida,cancelada',
+    ]);
+
+    // Validar que el doctor esté disponible en ese horario en el hospital seleccionado
+    $dayOfWeek = Carbon::parse($request->fecha)->format('l');
+    $horarioDisponible = Horario::where('doctor_id', $request->doctor_id)
+        ->where('hospital_id', $request->hospital_id)// Validar si el día está en el rango de días
+        ->where('hora_inicio', '<=', $request->hora)
+        ->where('hora_fin', '>=', $request->hora)
+        ->exists();
+
+    if (!$horarioDisponible) {
+        return redirect()->back()->withErrors(['hora' => 'El doctor no está disponible en el horario seleccionado.'])->withInput();
+    }
+
+    Cita::create($request->all());
+
+    return redirect()->route('paciente.cita.index')->with('success', 'Cita creada con éxito');
 }
 }

@@ -29,18 +29,18 @@
             </button>
         </div>
         <nav :class="{'block': open, 'hidden': !open}" class="flex-grow px-4 pb-4 md:block md:pb-0 md:overflow-y-auto">
-            <x-admin-nav-link :href="route('paciente.documento.index')" :active="request()->routeIs('paciente.documentos.index')">
+            {{-- <x-admin-nav-link :href="route('paciente.documento.index')" :active="request()->routeIs('paciente.documentos.index')">
                 {{ __('Documentos') }}
-            </x-admin-nav-link>
-            <x-admin-nav-link :href="route('paciente.cita.index')" :active="request()->routeIs('paciente.cita.index')">
+            </x-admin-nav-link> --}}
+            <x-admin-nav-link :href="route('doctor.cita.index')" :active="request()->routeIs('paciente.cita.index')">
                 {{ __('Citas') }}
             </x-admin-nav-link>
-            <x-admin-nav-link :href="route('paciente.historial.index')" :active="request()->routeIs('paciente.historial.index')">
+            <x-admin-nav-link :href="route('doctor.historial.index')" :active="request()->routeIs('paciente.historial.index')">
                 {{ __('Historial') }}
             </x-admin-nav-link>
-            <x-admin-nav-link :href="route('paciente.horario.index')" :active="request()->routeIs('paciente.horario.index')">
+            {{-- <x-admin-nav-link :href="route('doctor.horario.index')" :active="request()->routeIs('paciente.horario.index')">
                 {{ __('Horarios') }}
-            </x-admin-nav-link>
+            </x-admin-nav-link> --}}
 
             <div @click.away="open = false" class="relative" x-data="{ open: false }">
                 <button @click="open = !open" class="flex flex-row items-center w-full px-4 py-2 mt-5 text-sm font-semibold text-left bg-blue rounded-lg dark:bg-transparent dark:focus:text-white dark:hover:text-white dark:focus:bg-green-600 dark:hover:bg-green-600 md:block hover:text-green-900 focus:text-green-900 hover:bg-green-200 focus:bg-green-200 focus:outline-none focus:shadow-outline">

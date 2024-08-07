@@ -13,11 +13,18 @@ use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderMenuController;
+use App\Http\Controllers\Admin\PacienteController as AdminPacienteController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Doctor\CitaController as DoctorCitaController;
+use App\Http\Controllers\Doctor\HistorialController as DoctorHistorialController;
 use App\Http\Controllers\Frontend\CategoryController as FrontendCategoryController;
 use App\Http\Controllers\Frontend\MenuController as FrontendMenuController;
 use App\Http\Controllers\Frontend\ReservationController as FrontendReservationController;
 use App\Http\Controllers\Frontend\WelcomeController;
+use App\Http\Controllers\Paciente\CitaController as PacienteCitaController;
+use App\Http\Controllers\Paciente\DocumentoController;
+use App\Http\Controllers\Paciente\HistorialController as PacienteHistorialController;
+use App\Http\Controllers\Paciente\HorarioController as PacienteHorarioController;
 use App\Http\Controllers\Paciente\PacienteController;
 use App\Models\OrderMenu;
 use Illuminate\Support\Facades\Route;
@@ -48,7 +55,7 @@ Route::get('/dashboard', function () {
 Route::resource('/reservations', ReservationController::class);
 Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::get('/', [AdminController::class, 'index'])->name('index');
-    Route::resource('paciente', PacienteController::class);
+    Route::resource('paciente', AdminPacienteController::class);
     Route::resource('hospital', HospitalController::class);
     Route::resource('doctor', DoctorController::class);
     Route::resource('horario', HorarioController::class);
@@ -65,15 +72,23 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
 });
 
 Route::middleware(['auth'])->name('paciente.')->prefix('paciente')->group(function() {
-    Route::get('/', [Pacien::class, 'index'])->name('index');
-    Route::resource('/categories', CategoryController::class);
-    Route::resource('/menus', MenuController::class);
-    Route::resource('/tables', TableController::class);
-    Route::resource('/reservations', ReservationController::class);
-    Route::resource('/orders', OrderController::class);
-    Route::resource('/ordersmenu', OrderMenuController::class);
-    Route::resource('/users', UserController::class);
-    Route::resource('/invoices', InvoiceController::class);
+    Route::get('/', [PacienteController::class, 'index'])->name('index');
+    // Rutas para Historiales Médicos
+    Route::resource('historial', PacienteHistorialController::class);
+    // Rutas para Citas Médicas
+    Route::resource('cita', PacienteCitaController::class);
+    Route::resource('documento', DocumentoController::class);
+    Route::resource('horario', PacienteHorarioController::class);
+    // Rutas para Perfil del Paciente
+    Route::get('perfil', [PacienteController::class, 'show'])->name('perfil.show');
+    Route::get('perfil/edit', [PacienteController::class, 'edit'])->name('perfil.edit');
+    Route::put('perfil/update', [PacienteController::class, 'update'])->name('perfil.update');
+});
+
+Route::middleware(['auth'])->name('doctor.')->prefix('doctor')->group(function() {
+    Route::get('/', [DoctorController::class, 'index'])->name('index');
+    Route::resource('historial', DoctorHistorialController::class);
+    Route::resource('cita', DoctorCitaController::class);
 });
 
 require __DIR__.'/auth.php';

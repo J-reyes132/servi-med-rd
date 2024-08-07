@@ -34,4 +34,11 @@ class Cita extends Model
     {
         return $this->belongsTo(Hospital::class);
     }
+
+    public function scopePacienteId($query, $paciente)
+    {
+        if (!empty($paciente)) {
+            return $query->where('paciente_id', $paciente);
+        }
+    }
 }

@@ -32,4 +32,11 @@ class Paciente extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function scopeUsuario($query, $usuario)
+    {
+        if (!empty($usuario)) {
+            return $query->where('user_id', $usuario);
+        }
+    }
 }

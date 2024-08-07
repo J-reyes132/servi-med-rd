@@ -4,89 +4,71 @@ namespace App\Http\Controllers\Paciente;
 use App\Models\Paciente;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Cita;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class PacienteController extends Controller
 {
     public function index()
     {
-        $pacientes = Paciente::all();
-        return view('admin.pacientes.index', compact('pacientes'));
-    }
-
-    public function show(Paciente $paciente)
-    {
-        return view('admin.pacientes.show', compact('paciente'));
+        $citas = Cita::where('paciente_id', Auth::id())->get();
+        return view('paciente.cita.index', compact('citas'));
     }
 
     public function create()
     {
-        $usuarios = User::where('role','Paciente')->get();
-        return view('admin.pacientes.create', compact('usuarios'));
+        return view('paciente.cita.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'nullable|exists:users,id',
-            'cedula' => 'required|string|max:255|unique:pacientes',
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:pacientes',
-            'telefono' => 'required|string|max:15',
-            'fecha_nacimiento' => 'required|date',
-            'sexo' => 'required|string',
-            'edad' => 'required|integer',
-            'direccion' => 'required|string|max:255',
-            'peso' => 'required|numeric',
-            'altura' => 'required|numeric',
-            'tipo_sangre' => 'required|string',
-            'enfermedades' => 'nullable|string',
-            'nombre_seguro' => 'nullable|string|max:255',
-            'numero_seguro' => 'nullable|string|max:255',
+            'fecha' => 'required|date',
+            'hora' => 'required',
+            'motivo' => 'required|string|max:255',
+            'status' => 'required|string|in:pendiente,confirmada,atendida,cancelada',
         ]);
 
-        Paciente::create($request->all());
+        Cita::create([
+            'paciente_id' => Auth::id(),
+            'fecha' => $request->fecha,
+            'hora' => $request->hora,
+            'motivo' => $request->motivo,
+            'status' => $request->status,
+        ]);
 
-        return redirect()->route('admin.paciente.index')->with('success', 'Paciente creado con éxito');
+        return redirect()->route('paciente.citas.index')->with('success', 'Cita creada con éxito');
     }
 
-    public function edit(Paciente $paciente)
+    public function edit(Cita $cita)
     {
-        $usuarios = User::where('role','Paciente')->get();
-        return view('admin.pacientes.edit', compact('paciente', 'usuarios'));
+        $this->authorize('update', $cita);
+        return view('paciente.cita.edit', compact('cita'));
     }
 
-    public function update(Request $request, Paciente $paciente)
+    public function update(Request $request, Cita $cita)
     {
+        $this->authorize('update', $cita);
+
         $request->validate([
-            'user_id' => 'nullable|exists:users,id',
-            'cedula' => 'required|string|max:255|unique:pacientes,cedula,' . $paciente->id,
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:pacientes,email,' . $paciente->id,
-            'telefono' => 'required|string|max:15',
-            'fecha_nacimiento' => 'required|date',
-            'sexo' => 'required|string',
-            'edad' => 'required|integer',
-            'direccion' => 'required|string|max:255',
-            'peso' => 'required|numeric',
-            'altura' => 'required|numeric',
-            'tipo_sangre' => 'required|string',
-            'enfermedades' => 'nullable|string',
-            'nombre_seguro' => 'nullable|string|max:255',
-            'numero_seguro' => 'nullable|string|max:255',
+            'fecha' => 'required|date',
+            'hora' => 'required',
+            'motivo' => 'required|string|max:255',
+            'status' => 'required|string|in:pendiente,confirmada,atendida,cancelada',
         ]);
 
-        $paciente->update($request->all());
+        $cita->update($request->all());
 
-        return redirect()->route('admin.paciente.index')->with('success', 'Paciente actualizado con éxito');
+        return redirect()->route('paciente.citas.index')->with('success', 'Cita actualizada con éxito');
     }
 
-    public function destroy(Paciente $paciente)
+    public function destroy(Cita $cita)
     {
-        $paciente->delete();
+        $this->authorize('delete', $cita);
 
-        return redirect()->route('admin.pacientes.index')->with('danger', 'Paciente eliminado con éxito');
+        $cita->delete();
+
+        return redirect()->route('paciente.citas.index')->with('danger', 'Cita eliminada con éxito');
     }
 }

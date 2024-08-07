@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Paciente;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -37,18 +38,52 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'cedula' => 'required|string|max:255|unique:pacientes',
+            'apellido' => 'required|string|max:255',
+            'telefono' => 'required|string|max:15',
+            'fecha_nacimiento' => 'required|date',
+            'sexo' => 'required|string',
+            'edad' => 'required|integer',
+            'direccion' => 'required|string|max:255',
+            'peso' => 'required|numeric',
+            'altura' => 'required|numeric',
+            'tipo_sangre' => 'required|string',
+            'enfermedades' => 'nullable|string',
+            'nombre_seguro' => 'nullable|string|max:255',
+            'numero_seguro' => 'nullable|string|max:255',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'Paciente', // Asignar rol directamente
+        ]);
+
+        // Crear registro en la tabla `pacientes`
+        Paciente::create([
+            'user_id' => $user->id,
+            'cedula' => $request->cedula,
+            'nombre' => $request->name,
+            'apellido' => $request->apellido,
+            'email' => $request->email,
+            'telefono' => $request->telefono,
+            'fecha_nacimiento' => $request->fecha_nacimiento,
+            'sexo' => $request->sexo,
+            'edad' => $request->edad,
+            'direccion' => $request->direccion,
+            'peso' => $request->peso,
+            'altura' => $request->altura,
+            'tipo_sangre' => $request->tipo_sangre,
+            'enfermedades' => $request->enfermedades,
+            'nombre_seguro' => $request->nombre_seguro,
+            'numero_seguro' => $request->numero_seguro,
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->route('paciente.index');
     }
 }
