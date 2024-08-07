@@ -40,6 +40,9 @@
             </x-admin-nav-link>
             <x-admin-nav-link :href="route('admin.horario.index')" :active="request()->routeIs('admin.orders.index')">
                 {{ __('Horarios') }}
+                <x-admin-nav-link :href="route('admin.historial.index')" :active="request()->routeIs('admin.orders.index')">
+                {{ __('Historiales Medicos') }}
+                </x-admin-nav-link>
             </x-admin-nav-link>
             <x-admin-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                 {{ __('Usuarios') }}

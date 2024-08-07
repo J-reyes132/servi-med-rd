@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CitaController;
 use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Admin\HistorialController;
 use App\Http\Controllers\Admin\HorarioController;
 use App\Http\Controllers\Admin\HospitalController;
 use App\Http\Controllers\Admin\InvoiceController;
@@ -52,7 +53,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::resource('doctor', DoctorController::class);
     Route::resource('horario', HorarioController::class);
     Route::resource('cita', CitaController::class);
-    Route::post('cancel', [CitaController::class, 'cancel']);
+    Route::resource('admin/historial', HistorialController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/menus', MenuController::class);
     Route::resource('/tables', TableController::class);
