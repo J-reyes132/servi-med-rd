@@ -19,7 +19,6 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hospital</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hora</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Motivo</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                         </tr>
@@ -32,16 +31,23 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $cita->hospital->nombre }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $cita->fecha }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $cita->hora }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $cita->motivo }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ucfirst($cita->status) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.cita.show', $cita->id) }}" class="text-blue-600 hover:text-blue-900">Ver</a>
-                                <a href="{{ route('admin.cita.edit', $cita->id) }}" class="text-indigo-600 hover:text-indigo-900">Editar</a>
-                                <form action="{{ route('admin.cita.destroy', $cita->id) }}" method="POST" class="inline-block">
+                                @if($cita->status != 'cancelada')
+                                <form action="{{ route('cita.cancel', $cita->id) }}" method="POST" class="inline-block ml-2">
                                     @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                                    @method('PUT')
+                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Estás seguro de que deseas cancelar esta cita?');">Cancelar</button>
                                 </form>
+                                @endif
+
+                                @if($cita->status == 'pendiente')
+                                <form action="{{ route('cita.approve', $cita->id) }}" method="POST" class="inline-block ml-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="text-green-600 hover:text-green-900" onclick="return confirm('¿Estás seguro de que deseas aprobar esta cita?');">Aprobar</button>
+                                </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

@@ -41,9 +41,9 @@ class CitaController extends Controller
         ]);
 
         // Validar que el doctor esté disponible en ese horario en el hospital seleccionado
+        $dayOfWeek = Carbon::parse($request->fecha)->format('l');
         $horarioDisponible = Horario::where('doctor_id', $request->doctor_id)
-            ->where('hospital_id', $request->hospital_id)
-            ->where('day_of_week', Carbon::parse($request->fecha)->format('l'))
+            ->where('hospital_id', $request->hospital_id)// Validar si el día está en el rango de días
             ->where('hora_inicio', '<=', $request->hora)
             ->where('hora_fin', '>=', $request->hora)
             ->exists();
@@ -59,6 +59,9 @@ class CitaController extends Controller
 
     public function show(Cita $cita)
     {
+        $pacientes = Paciente::all();
+        $doctores = Doctor::all();
+        $hospitales = Hospital::all();
         return view('admin.cita.show', compact('cita'));
     }
 
@@ -105,4 +108,16 @@ class CitaController extends Controller
 
         return redirect()->route('admin.cita.index')->with('danger', 'Cita eliminada con éxito');
     }
+
+    public function cancel(Cita $cita)
+{
+    $cita->update(['status' => 'cancelada']);
+    return redirect()->route('admin.cita.index')->with('success', 'Cita cancelada con éxito');
+}
+
+public function approve(Cita $cita)
+{
+    $cita->update(['status' => 'confirmada']);
+    return redirect()->route('admin.cita.index')->with('success', 'Cita aprobada con éxito');
+}
 }

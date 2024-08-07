@@ -37,6 +37,8 @@ Route::post('/reservation/step-two', [FrontendReservationController::class, 'sto
 Route::get('/thankyou', [WelcomeController::class, 'thankyou'])->name('thankyou');
 
 
+Route::put('cita/{cita}/cancel', [CitaController::class, 'cancel'])->name('cita.cancel');
+Route::put('cita/{cita}/approve', [CitaController::class, 'approve'])->name('cita.approve');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -50,7 +52,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
     Route::resource('doctor', DoctorController::class);
     Route::resource('horario', HorarioController::class);
     Route::resource('cita', CitaController::class);
-
+    Route::post('cancel', [CitaController::class, 'cancel']);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/menus', MenuController::class);
     Route::resource('/tables', TableController::class);

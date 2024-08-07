@@ -17,6 +17,7 @@ class Cita extends Model
         'hora',
         'motivo',
         'status',
+        'razon_cancelacion',
     ];
 
     public function paciente()

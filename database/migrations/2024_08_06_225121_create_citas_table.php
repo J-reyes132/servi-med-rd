@@ -15,12 +15,13 @@ return new class extends Migration
     {
         Schema::create('citas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('paciente_id')->unique()->index()->references('id')->on('pacientes');
-            $table->foreignId('doctor_id')->unique()->index()->references('id')->on('doctors');
-            $table->foreignId('hospital_id')->unique()->index()->references('id')->on('hospitals');
+            $table->foreignId('paciente_id')->index()->references('id')->on('pacientes');
+            $table->foreignId('doctor_id')->index()->references('id')->on('doctors');
+            $table->foreignId('hospital_id')->index()->references('id')->on('hospitals');
             $table->date('fecha');
             $table->time('hora');
             $table->string('motivo');
+            $table->string('razon_cancelacion')->nullable();
             $table->enum('status', ['pendiente', 'confirmada', 'atendida', 'cancelada']);
             $table->timestamps();
         });
