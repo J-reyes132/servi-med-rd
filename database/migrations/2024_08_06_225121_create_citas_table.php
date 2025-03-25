@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('paciente_id')->index()->references('id')->on('pacientes');
             $table->foreignId('doctor_id')->index()->references('id')->on('doctors');
-            $table->foreignId('hospital_id')->index()->references('id')->on('hospitals');
             $table->date('fecha');
             $table->time('hora');
             $table->string('motivo');

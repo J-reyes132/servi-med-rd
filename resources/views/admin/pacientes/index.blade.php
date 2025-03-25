@@ -1,53 +1,61 @@
+
 <x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Pacientes') }}
+            {{ __('Doctores') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex justify-end m-2 p-2">
-                <a href="{{ route('admin.paciente.create') }}" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Agregar Paciente</a>
-            </div>
-            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-                <table class="min-w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cédula</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Apellido</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Teléfono</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha de Nacimiento</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sexo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($pacientes as $paciente)
-                        <tr class="bg-white border-b">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $paciente->cedula }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $paciente->nombre }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $paciente->apellido }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $paciente->email }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $paciente->telefono }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $paciente->fecha_nacimiento }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $paciente->sexo }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.paciente.show', $paciente->id) }}" class="text-indigo-600 hover:text-indigo-900">Ver</a>
-                                <a href="{{ route('admin.paciente.edit', $paciente->id) }}" class="text-indigo-600 hover:text-indigo-900">Editar</a>
-                                <form action="{{ route('admin.paciente.destroy', $paciente->id) }}" method="POST" class="inline-block">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    <div class="bg-white p-6 rounded shadow">
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-bold">Pacientes</h2>
+            <a href="{{ route('admin.paciente.create') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+                + Agregar Paciente
+            </a>
         </div>
+        <table class="w-full mt-4 border-collapse bg-white shadow rounded-lg overflow-hidden">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="p-3 text-left">Cédula</th>
+                    <th class="p-3 text-left">Nombre</th>
+                    <th class="p-3 text-left">Apellido</th>
+                    <th class="p-3 text-left">Email</th>
+                    <th class="p-3 text-left">Teléfono</th>
+                    <th class="p-3 text-left">Fecha de Nacimiento</th>
+                    <th class="p-3 text-left">sexo</th>
+                    <th class="p-3 text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($pacientes as $paciente)
+                <tr class="border-b hover:bg-gray-100 transition">
+                    <td class="p-3 text-gray-700">{{ $paciente->cedula }}</td>
+                    <td class="p-3 text-gray-700">{{ $paciente->nombre }}</td>
+                    <td class="p-3 text-gray-700">{{ $paciente->apellido }}</td>
+                    <td class="p-3 text-gray-700">{{ $paciente->email }}</td>
+                    <td class="p-3 text-gray-700">{{ $paciente->telefono }}</td>
+                    <td class="p-3 text-gray-700">{{ $paciente->fecha_nacimiento }}</td>
+                    <td class="p-3 text-gray-700">{{ $paciente->sexo }}</td>
+                    <td class="p-3 flex justify-center gap-2">
+                        <a href="{{ route('admin.paciente.show', $paciente->id) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 transition text-sm">
+                            Ver
+                        </a>
+                        <a href="{{ route('admin.paciente.edit', $paciente->id) }}" class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-yellow-700 transition text-sm">
+                            Editar
+                        </a>
+                        <form action="{{ route('admin.paciente.destroy', $paciente->id) }}" method="POST" class="inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm" onclick="return confirm('¿Estás seguro?')">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
+
+
 </x-admin-layout>

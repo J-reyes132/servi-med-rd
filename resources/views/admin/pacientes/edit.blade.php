@@ -9,6 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">
+                        Editando información de: <span class="text-indigo-600">{{ $paciente->nombre }} {{ $paciente->apellido }}</span>
+                    </h3>
                     <form method="POST" action="{{ route('admin.paciente.update', $paciente->id) }}">
                         @csrf
                         @method('PUT')
@@ -150,9 +153,12 @@
                             @enderror
                         </div>
 
-                        <div class="flex justify-end">
+                        <div class="flex justify-between mt-6">
+                            <a href="{{ route('admin.doctor.index') }}" class="bg-gray-800 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                                Cancelar
+                            </a>
                             <button type="submit" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                                Actualizar Paciente
+                                Guardar Cambios
                             </button>
                         </div>
                     </form>
