@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('historials', function (Blueprint $table) {
             $table->id();
+            $table->string('codigo')->unique(); // Código único del historial
             $table->foreignId('paciente_id')->unsigned()->index()->references('id')->on('pacientes')->onDelete('cascade'); // Asociar con el paciente
             $table->foreignId('cita_id')->nullable()->unsigned()->index()->references('id')->on('citas'); // Asociar con la cita
             $table->date('fecha');

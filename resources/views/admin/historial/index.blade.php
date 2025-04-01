@@ -1,55 +1,80 @@
 <x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Historial Médico') }}
+            {{ __('Historiales Médicos') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex justify-end m-2 p-2">
-                <a href="{{ route('admin.historial.create') }}" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Agregar Registro</a>
-            </div>
-            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-                <table class="min-w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Paciente</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cita</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descripción</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Documento</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($historials as $historial)
-                        <tr class="bg-white border-b">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $historial->paciente->nombre }} {{ $historial->paciente->apellido }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $historial->cita ? $historial->cita->fecha : 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $historial->fecha }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ Str::limit($historial->descripcion, 50) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                @if ($historial->documento)
-                                    <a href="{{ Storage::url($historial->documento) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">Ver Documento</a>
-                                @else
-                                    No adjunto
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.historial.show', $historial->id) }}" class="text-blue-600 hover:text-blue-900">Ver</a>
-                                <a href="{{ route('admin.historial.edit', $historial->id) }}" class="text-indigo-600 hover:text-indigo-900 ml-2">Editar</a>
-                                <form action="{{ route('admin.historial.destroy', $historial->id) }}" method="POST" class="inline-block ml-2">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?');">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    <div class="bg-white p-6 rounded shadow">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold">Registros de Historial</h2>
+            <a href="{{ route('admin.historial.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                + Nuevo Registro
+            </a>
         </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse bg-white shadow rounded-lg overflow-hidden">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="p-3 text-left">Codigo</th>
+                        <th class="p-3 text-left">Paciente</th>
+                        <th class="p-3 text-left">Fecha</th>
+                        <th class="p-3 text-left">Cita Asociada</th>
+                        <th class="p-3 text-left">Documento</th>
+                        <th class="p-3 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($historials as $historial)
+                    <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="p-3 text-gray-700">
+                           {{ $historial->codigo }}
+                        </td>
+                        <td class="p-3 text-gray-700">
+                            {{ $historial->paciente->nombre }} {{ $historial->paciente->apellido }}
+                        </td>
+                        <td class="p-3 text-gray-700">{{ $historial->fecha}}</td>
+                        <td class="p-3 text-gray-700">
+                            @if($historial->cita)
+                            {{ $historial->cita->fecha}} - {{ $historial->cita->hora }}
+                            @else
+                            Sin cita asociada
+                            @endif
+                        </td>
+                        <td class="p-3 text-gray-700">
+                            @if($historial->documento)
+                            <a href="{{ asset('storage/'.$historial->documento) }}" target="_blank" class="text-blue-500 hover:underline">
+                                Ver documento
+                            </a>
+                            @else
+                            Sin documento
+                            @endif
+                        </td>
+                        <td class="p-3 flex justify-center gap-2">
+                            <a href="{{ route('admin.historial.show', $historial->id) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ route('admin.historial.edit', $historial->id) }}" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('admin.historial.destroy', $historial->id) }}" method="POST" class="inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition" onclick="return confirm('¿Eliminar este registro?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="p-3 text-center text-gray-500">No hay registros de historial</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </x-admin-layout>

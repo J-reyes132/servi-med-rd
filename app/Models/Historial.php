@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Historial extends Model
 {
@@ -16,6 +17,15 @@ class Historial extends Model
         'descripcion',
         'documento',
     ];
+
+    protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($historial) {
+        $historial->codigo = 'HM-' . Str::upper(Str::random(8));
+    });
+}
 
     public function paciente()
     {

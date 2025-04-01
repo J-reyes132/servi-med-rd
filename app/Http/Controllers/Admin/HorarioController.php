@@ -20,23 +20,32 @@ class HorarioController extends Controller
     public function create()
     {
         $doctores = Doctor::all();
-        $hospitales = Hospital::all();
-        return view('admin.horario.create', compact('doctores', 'hospitales'));
+        // $hospitales = Hospital::all();
+        return view('admin.horario.create', compact('doctores'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'doctor_id' => 'required|exists:doctors,id',
-            'hospital_id' => 'required|exists:hospitals,id',
+            'dias' => 'required|array',
+            'dias.*' => 'string',
             'hora_inicio' => 'required|date_format:H:i',
-            'hora_fin' => 'required|date_format:H:i',
-            'day_of_week' => 'required|string|max:20',
+            'hora_fin' => 'required|date_format:H:i|after:hora_inicio'
         ]);
 
-        Horario::create($request->all());
+        foreach ($request->dias as $dia) {
+            Horario::create([
+                'doctor_id' => $request->doctor_id,
+                'day_of_week' => $dia,
+                'hora_inicio' => $request->hora_inicio,
+                'hora_fin' => $request->hora_fin
+            ]);
+        }
 
-        return redirect()->route('admin.horario.index')->with('success', 'Horario creado con éxito');
+        return redirect()->route('admin.horario.index')
+            ->with('success', 'Horarios creados exitosamente');
+
     }
 
     public function show(Horario $horario)

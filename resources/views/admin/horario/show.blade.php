@@ -15,11 +15,6 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Hospital</label>
-                        <p class="text-lg text-gray-900">{{ $horario->hospital->nombre }}</p>
-                    </div>
-
-                    <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Día de la Semana</label>
                         <p class="text-lg text-gray-900">{{ $horario->day_of_week }}</p>
                     </div>

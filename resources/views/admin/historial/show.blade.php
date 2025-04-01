@@ -1,50 +1,50 @@
 <x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Detalles del Historial Médico') }}
+            {{ __('Detalle de Historial Médico') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Paciente</label>
-                        <p class="text-lg text-gray-900">{{ $historial->paciente->nombre }} {{ $historial->paciente->apellido }}</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Cita</label>
-                        <p class="text-lg text-gray-900">{{ $historial->cita ? $historial->cita->fecha : 'N/A' }}</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Fecha</label>
-                        <p class="text-lg text-gray-900">{{ $historial->fecha }}</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Descripción</label>
-                        <p class="text-lg text-gray-900">{{ $historial->descripcion }}</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Documento</label>
-                        @if ($historial->documento)
-                            <a href="{{ Storage::url($historial->documento) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">Ver Documento</a>
-                        @else
-                            <p class="text-lg text-gray-900">No adjunto</p>
-                        @endif
-                    </div>
-
-                    <div class="flex justify-end mt-6">
-                        <a href="{{ route('admin.historial.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                            Volver
-                        </a>
-                    </div>
-                </div>
+    <div class="bg-white p-6 rounded shadow">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Información del Paciente</h3>
+                <p><strong>Nombre:</strong> {{ $historial->paciente->nombre }} {{ $historial->paciente->apellido }}</p>
+                <p><strong>Identificación:</strong> {{ $historial->paciente->cedula }}</p>
             </div>
+
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Detalles del Registro</h3>
+                <p><strong>Fecha:</strong> {{ $historial->fecha }}</p>
+                @if($historial->cita)
+                <p><strong>Cita asociada:</strong> {{ $historial->cita->fecha }} a las {{ $historial->cita->hora }}</p>
+                @endif
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-2">Descripción</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                {!! nl2br(e($historial->descripcion)) !!}
+            </div>
+        </div>
+
+        @if($historial->documento)
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-2">Documento Adjunto</h3>
+            <a href="{{ asset('storage/'.$historial->documento) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                <i class="fas fa-file-pdf mr-2"></i> Ver Documento
+            </a>
+        </div>
+        @endif
+
+        <div class="flex justify-end space-x-">
+            <a href="{{ route('admin.historial.index') }}" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-600 transition">
+                Volver al listado
+            </a>
+            <a href="{{ route('admin.historial.edit', $historial->id) }}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-yellow-600 transition">
+                Editar Registro
+            </a>
         </div>
     </div>
 </x-admin-layout>

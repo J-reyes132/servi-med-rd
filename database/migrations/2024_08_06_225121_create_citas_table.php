@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('motivo');
             $table->string('razon_cancelacion')->nullable();
             $table->enum('status', ['pendiente', 'confirmada', 'atendida', 'cancelada']);
+            $table->enum(('tipo'), ['presencial', 'virtual', 'telefonica', 'whatsapp']);
             $table->timestamps();
         });
     }

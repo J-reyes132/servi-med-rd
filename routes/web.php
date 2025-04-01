@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CitaController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\HistorialController;
 use App\Http\Controllers\Admin\HorarioController;
@@ -51,9 +52,13 @@ Route::put('cita/{cita}/approve', [CitaController::class, 'approve'])->name('cit
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('admin/cita/create', [CitaController::class, 'create'])->name('admin.cita.create');
+Route::get('admin/cita/{cita}/edit', [CitaController::class, 'edit'])->name('admin.cita.edit');
+Route::put('admin/cita/{cita}', [CitaController::class, 'update'])->name('admin.cita.update');
+Route::get('admin/cita/{cita}', [CitaController::class, 'show'])->name('admin.cita.show');
 Route::resource('/reservations', ReservationController::class);
 Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function() {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::resource('paciente', AdminPacienteController::class);
     Route::resource('hospital', HospitalController::class);
@@ -76,6 +81,10 @@ Route::middleware(['auth'])->name('paciente.')->prefix('paciente')->group(functi
     // Rutas para Historiales Médicos
     Route::resource('historial', PacienteHistorialController::class);
     // Rutas para Citas Médicas
+    Route::get('cita/create', [PacienteCitaController::class, 'create'])->name('cita.create');
+    Route::get('cita/{cita}/edit', [PacienteCitaController::class, 'edit'])->name('cita.edit');
+    Route::put('cita/{cita}', [PacienteCitaController::class, 'update'])->name('cita.update');
+    Route::get('cita/{cita}', [PacienteCitaController::class, 'show'])->name('cita.show');
     Route::resource('cita', PacienteCitaController::class);
     Route::resource('documento', DocumentoController::class);
     Route::resource('horario', PacienteHorarioController::class);

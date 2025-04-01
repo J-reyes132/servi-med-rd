@@ -16,7 +16,7 @@ class CitaController extends Controller
 {
     public function index()
     {
-        $citas = Cita::with(['paciente', 'doctor', 'hospital'])->get();
+        $citas = Cita::with(['paciente', 'doctor'])->get();
         return view('admin.cita.index', compact('citas'));
     }
 
@@ -25,8 +25,8 @@ class CitaController extends Controller
     {
         $pacientes = Paciente::all();
         $doctores = Doctor::all();
-        $hospitales = Hospital::all();
-        return view('admin.cita.create', compact('pacientes', 'doctores', 'hospitales'));
+        // $hospitales = Hospital::all();
+        return view('admin.cita.create', compact('pacientes', 'doctores'));
     }
 
     public function store(Request $request)
@@ -34,7 +34,6 @@ class CitaController extends Controller
         $request->validate([
             'paciente_id' => 'required|exists:pacientes,id',
             'doctor_id' => 'required|exists:doctors,id',
-            'hospital_id' => 'required|exists:hospitals,id',
             'fecha' => 'required|date|after_or_equal:today',
             'hora' => 'required|date_format:H:i',
             'motivo' => 'required|string|max:255',
@@ -42,16 +41,15 @@ class CitaController extends Controller
         ]);
 
         // Validar que el doctor esté disponible en ese horario en el hospital seleccionado
-        $dayOfWeek = Carbon::parse($request->fecha)->format('l');
-        $horarioDisponible = Horario::where('doctor_id', $request->doctor_id)
-            ->where('hospital_id', $request->hospital_id)// Validar si el día está en el rango de días
-            ->where('hora_inicio', '<=', $request->hora)
-            ->where('hora_fin', '>=', $request->hora)
-            ->exists();
+        // $dayOfWeek = Carbon::parse($request->fecha)->format('l');
+        // $horarioDisponible = Horario::where('doctor_id', $request->doctor_id)
+        //     ->where('hora_inicio', '<=', $request->hora)
+        //     ->where('hora_fin', '>=', $request->hora)
+        //     ->exists();
 
-        if (!$horarioDisponible) {
-            return redirect()->back()->withErrors(['hora' => 'El doctor no está disponible en el horario seleccionado.'])->withInput();
-        }
+        // if (!$horarioDisponible) {
+        //     return redirect()->back()->withErrors(['hora' => 'El doctor no está disponible en el horario seleccionado.'])->withInput();
+        // }
 
         Cita::create($request->all());
 
@@ -60,18 +58,19 @@ class CitaController extends Controller
 
     public function show(Cita $cita)
     {
-        $pacientes = Paciente::all();
+        $paciente = Paciente::all();
         $doctores = Doctor::all();
-        $hospitales = Hospital::all();
-        return view('admin.cita.show', compact('cita'));
+        // $hospitales = Hospital::all();
+        return view('admin.cita.show', compact('cita', 'paciente', 'doctores'));
     }
 
     public function edit(Cita $cita)
     {
         $pacientes = Paciente::all();
         $doctores = Doctor::all();
-        $hospitales = Hospital::all();
-        return view('admin.cita.edit', compact('cita', 'pacientes', 'doctores', 'hospitales'));
+        $cita = Cita::find($cita->id);
+        // $hospitales = Hospital::all();
+        return view('admin.cita.edit', compact('cita', 'pacientes', 'doctores'));
     }
 
     public function update(Request $request, Cita $cita)
@@ -133,8 +132,8 @@ public function create_paciente()
     $user = auth()->user();
     $paciente = Paciente::where('user_id', $user->id)->get();
     $doctores = Doctor::all();
-    $hospitales = Hospital::all();
-    return view('paciente.cita.create', compact('paciente', 'doctores', 'hospitales'));
+
+    return view('paciente.cita.create', compact('paciente', 'doctores'));
 }
 
 public function store_paciente(Request $request)
@@ -142,7 +141,6 @@ public function store_paciente(Request $request)
     $request->validate([
         'paciente_id' => 'required|exists:pacientes,id',
         'doctor_id' => 'required|exists:doctors,id',
-        'hospital_id' => 'required|exists:hospitals,id',
         'fecha' => 'required|date|after_or_equal:today',
         'hora' => 'required|date_format:H:i',
         'motivo' => 'required|string|max:255',
@@ -151,8 +149,7 @@ public function store_paciente(Request $request)
 
     // Validar que el doctor esté disponible en ese horario en el hospital seleccionado
     $dayOfWeek = Carbon::parse($request->fecha)->format('l');
-    $horarioDisponible = Horario::where('doctor_id', $request->doctor_id)
-        ->where('hospital_id', $request->hospital_id)// Validar si el día está en el rango de días
+    $horarioDisponible = Horario::where('doctor_id', $request->doctor_id)// Validar si el día está en el rango de días
         ->where('hora_inicio', '<=', $request->hora)
         ->where('hora_fin', '>=', $request->hora)
         ->exists();

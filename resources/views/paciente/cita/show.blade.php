@@ -1,4 +1,4 @@
-<x-admin-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Detalles de la Cita') }}
@@ -77,9 +77,6 @@
                             <form action="{{ route('cita.approve', $cita->id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
-                                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition">
-                                    Aprobar Cita
-                                </button>
                             </form>
                             @endif
 
@@ -87,19 +84,16 @@
                             <form action="{{ route('cita.cancel', $cita->id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
-                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition"
-                                    onclick="return confirm('¿Está seguro de cancelar esta cita?')">
-                                    Cancelar Cita
-                                </button>
+
                             </form>
                             @endif
                         </div>
 
                         <div class="flex space-x-3">
-                            <a href="{{ route('admin.cita.edit', $cita->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition">
+                            <a href="{{ route('paciente.cita.edit', $cita->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition">
                                 Editar Cita
                             </a>
-                            <a href="{{ route('admin.cita.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                            <a href="{{ route('paciente.cita.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
                                 Volver al Listado
                             </a>
                         </div>
@@ -108,4 +102,4 @@
             </div>
         </div>
     </div>
-</x-admin-layout>
+</x-app-layout>

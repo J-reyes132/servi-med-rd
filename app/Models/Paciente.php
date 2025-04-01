@@ -39,4 +39,9 @@ class Paciente extends Model
             return $query->where('user_id', $usuario);
         }
     }
+
+    public function historiales()
+    {
+        return $this->hasMany(Historial::class);
+    }
 }

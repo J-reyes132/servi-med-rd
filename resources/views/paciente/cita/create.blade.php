@@ -1,4 +1,4 @@
-<x-paciente-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Agregar Cita Médica') }}
@@ -24,17 +24,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-4">
-                            <label for="hospital_id" class="block text-sm font-medium text-gray-700">Hospital</label>
-                            <select name="hospital_id" id="hospital_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                                @foreach ($hospitales as $hospital)
-                                    <option value="{{ $hospital->id }}">{{ $hospital->nombre }}</option>
-                                @endforeach
-                            </select>
-                            @error('hospital_id')
-                                <span class="text-red-600 text-sm">{{ $message }}</span>
-                            @enderror
-                        </div>
+
 
                         <div class="mb-4">
                             <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
@@ -83,4 +73,4 @@
             </div>
         </div>
     </div>
-</x-paciente-layout>
+</x-app-layout>

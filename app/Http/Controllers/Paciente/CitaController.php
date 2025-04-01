@@ -23,37 +23,25 @@ class CitaController extends Controller
     public function create()
     {
         $doctores = Doctor::all();
-        $hospitales = Hospital::all();
-        return view('paciente.cita.create', compact('doctores', 'hospitales'));
+
+        return view('paciente.cita.create', compact('doctores'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'doctor_id' => 'required|exists:doctors,id',
-            'hospital_id' => 'required|exists:hospitals,id',
             'fecha' => 'required|date|after_or_equal:today',
             'hora' => 'required|date_format:H:i',
             'motivo' => 'required|string|max:255',
             'status' => 'required|in:pendiente,confirmada,atendida,cancelada',
         ]);
 
-        $dayOfWeek = Carbon::parse($request->fecha)->format('l');
-        $horarioDisponible = Horario::where('doctor_id', $request->doctor_id)
-            ->where('hospital_id', $request->hospital_id)
-            ->where('hora_inicio', '<=', $request->hora)
-            ->where('hora_fin', '>=', $request->hora)
-            ->exists();
-
-        if (!$horarioDisponible) {
-            return redirect()->back()->withErrors(['hora' => 'El doctor no está disponible en el horario seleccionado.'])->withInput();
-        }
 
         $paciente = Paciente::where('user_id', Auth::id())->first();
         Cita::create([
             'paciente_id' => $paciente->id,
             'doctor_id' => $request->doctor_id,
-            'hospital_id' => $request->hospital_id,
             'fecha' => $request->fecha,
             'hora' => $request->hora,
             'motivo' => $request->motivo,
@@ -65,14 +53,14 @@ class CitaController extends Controller
 
     public function show(Cita $cita)
     {
-        return view('paciente.cita.show', compact('cita'));
+        $paciente = Paciente::where('user_id', Auth::id())->first();
+        return view('paciente.cita.show', compact('cita', 'paciente'));
     }
 
     public function edit(Cita $cita)
     {
         $doctores = Doctor::all();
-        $hospitales = Hospital::all();
-        return view('paciente.cita.edit', compact('cita', 'doctores', 'hospitales'));
+        return view('paciente.cita.edit', compact('cita', 'doctores'));
     }
 
     public function update(Request $request, Cita $cita)
